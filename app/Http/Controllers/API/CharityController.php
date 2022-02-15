@@ -5,12 +5,18 @@ namespace App\Http\Controllers\API;
 use App\Http\Requests\CharityPostRequest;
 use App\Http\Controllers\Controller;
 use App\Models\Charity;
+use Illuminate\Http\Request;
+
 
 class CharityController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $data = Charity::paginate(10);
+        $data = Charity::latest();
+        if ($request->search) {
+            $data = $data->whereLike(['name', 'description',], $request->search);
+        }
+        $data = $data->paginate(10);
         return $this->respondWithSuccess($data);
     }
 

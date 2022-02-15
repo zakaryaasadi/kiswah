@@ -18,13 +18,19 @@ class NewsController extends Controller
         if ($request->sort) {
             $news = $news->where('variation', $request->sort);
         }
+        if ($request->search) {
+            $news = $news->whereLike(['title', 'title_ar', 'text', 'text_ar'], $request->search);
+        }
         $news = $news->paginate(10);
         return $this->respondWithSuccess(['data' => $news]);
     }
 
-    public function news()
+    public function news(Request $request)
     {
-        $news = News::latest()->where('variation',  'news');
+        $news = News::latest()->where('variation', 'news');
+        if ($request->search) {
+            $news = $news->whereLike(['title', 'title_ar', 'text', 'text_ar',], $request->search);
+        }
         $news = $news->paginate(10);
         return $this->respondWithSuccess(['data' => $news]);
     }
@@ -49,6 +55,7 @@ class NewsController extends Controller
         $image = moveFile($request->image);
         $data = $request->all();
         $data['image'] = $image;
+        $data['language'] = 'both';
         $news = News::create($data);
         return $this->respondWithSuccess(['data' => $news]);
     }

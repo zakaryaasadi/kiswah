@@ -32,6 +32,9 @@ Route::group(['prefix' => 'customer'], function () {
     Route::get('/', 'API\CustomerController@index');
     Route::post('/login', 'API\CustomerController@authenticate');
     Route::post('/register', 'API\CustomerController@store');
+    Route::post('/generate-otp', 'API\CustomerController@generateOtp');
+    Route::post('/confirm-otp', 'API\CustomerController@confirmOtp');
+
     Route::post('/forgot-password', 'API\CustomerController@forgetPassword');
     Route::post('/update-password', 'API\CustomerController@updatePassword');
     Route::post('/change-password', 'API\CustomerController@changePassword')->middleware('auth:api');
@@ -74,7 +77,9 @@ Route::group(['middleware' => ['auth:users', 'scopes:view_as_admin'], 'prefix' =
     Route::get('/profile', 'API\AdminController@getAuthenticatedUser');
     Route::post('/profile', 'API\AdminController@uploadAvatar');
     Route::post('donations/{id}', 'API\DonationTypeController@update');
+    Route::post('users/{id}', 'API\AdminCustomersController@update');
     Route::apiResource('donations', 'API\DonationTypeController');
+
     Route::group(['prefix' => 'customers'], function () {
         Route::get('/{id}/locations', 'API\AdminCustomersController@showLocations');
         Route::get('/{id}/tasks', 'API\AdminCustomersController@showTasks');
@@ -102,5 +107,4 @@ Route::group(['middleware' => ['auth:users', 'scopes:view_as_admin'], 'prefix' =
     Route::apiResource('merchants', 'API\MerchantController');
     Route::apiResource('/admins', 'API\UserController');
     Route::apiResource('region', 'API\RegionController');
-
 });

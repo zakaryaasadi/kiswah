@@ -27,7 +27,9 @@ class CustomerController extends Controller
     public function authenticate(Request $request)
     {
         $this->validateData($request, ['email' => 'required', 'password' => 'required']);
-        $user = Customer::query()->orWhere('phone', $request->email)->orWhere('email', $request->email)->first();
+        $user = Customer::query()
+            ->orWhere('phone', $request->email)
+            ->orWhere('email', $request->email)->first();
         if (!$user) {
             return $this->respondWithError('Account not found');
         }
@@ -35,8 +37,43 @@ class CustomerController extends Controller
             return $this->respondWithError(['error' => 'Invalid credentials'], 400);
         }
         $token = $user->createToken('LaravelAuthApp')->accessToken;
-
         return $this->respondWithSuccess(['data' => ['token' => $token, 'user' => $user]], 201);
+    }
+
+    public function generateOtp(Request $request)
+    {
+        $this->validateData($request, ['email' => 'required']);
+        $user = Customer::query()
+            ->orWhere('username', $request->email)
+            ->orWhere('phone', $request->email)
+            ->orWhere('email', $request->email)->first();
+        if (!$user) {
+            return $this->respondWithError('Account not found');
+        }
+        $otp = rand(7777, 9999);
+        //send sms
+        sendSMS($user->phone, $otp);
+        $user->password = Hash::make($otp);
+        $user->save();
+        return $this->respondWithSuccess(['data' => ['otp' => $otp, 'email' => $user->email]], 201);
+    }
+
+    public function confirmOtp(Request $request)
+    {
+        $this->validateData($request, ['email' => 'required', 'otp' => 'required|number|min:6']);
+        $user = Customer::query()
+            ->orWhere('username', $request->email)
+            ->orWhere('phone', $request->email)
+            ->orWhere('email', $request->email)->first();
+        if (!$user) {
+            return $this->respondWithError('Account not found');
+        }
+        if (!Hash::check($request->otp, $user->password)) {
+            return $this->respondWithError(['error' => 'Invalid credentials'], 400);
+        }
+        $token = $user->createToken('LaravelAuthApp')->accessToken;
+        return $this->respondWithSuccess(['data' => ['token' => $token, 'user' => $user]], 201);
+
     }
 
 
@@ -82,7 +119,7 @@ class CustomerController extends Controller
         if (!$user) {
             return $this->respondWithError('Account does not match record');
         }
-        $token = rand(777777, 999999);
+        $token = rand(7777, 9999);
         DB::table('password_resets')->insert(['email' => $request->email, 'token' => $token, 'created_at' => now()]);
 
         //Notify User
@@ -166,7 +203,7 @@ class CustomerController extends Controller
     public function store(CustomerPostRequest $request)
     {
         $customer = Customer::create(
-            $request->merge(['password' => Hash::make($request->password)])
+            $request->merge(['password' => Hash::make(rand(7777, 9999))])
                 ->except(['address', 'longitude', 'latitude'])
         );
         if ($request->has('address') && $request->has('longitude')) {
@@ -178,7 +215,7 @@ class CustomerController extends Controller
                 'is_default' => true,
             ]);
         }
-        $tookan =  (new Tookan())->addCustomer($request->except(['password', 'username']));
+        $tookan = (new Tookan())->addCustomer($request->except(['password', 'username']));
         if ($tookan->status === 200) {
             $customer->tookan_id = $tookan->data['customer_id'];
             $customer->save();
@@ -186,8 +223,8 @@ class CustomerController extends Controller
         if ($tookan->status === 201) {
             //Find Customer by phone on Tookan
         }
-        $token = $customer->createToken('LaravelAuthApp')->accessToken;
-        return $this->respondWithSuccess(['data' => ['token' => $token, 'user' => $customer]], 201);
+//        $token = $customer->createToken('LaravelAuthApp')->accessToken;
+        return $this->respondWithSuccess('Registered successfully, Kindly login', 401);
     }
 
     public function update(Request $request)

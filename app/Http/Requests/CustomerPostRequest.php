@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CustomerPostRequest extends BaseRequest
 {
@@ -14,15 +14,20 @@ class CustomerPostRequest extends BaseRequest
      */
     public function rules()
     {
+        $id = $this->id;
         return [
-            'name' => ['required'],
-            'username' => ['required', 'unique:customers'],
-            'email' => ['sometimes', 'unique:customers'],
+            'name' => ['required', 'min:4'],
+            'username' => ['sometimes',
+                Rule::unique('customers', 'username')->ignore($id, 'uuid')
+            ],
+            'email' => ['sometimes',
+                Rule::unique('customers')->ignore($id, 'uuid')
+            ],
             'address' => ['nullable'],
             'latitude' => ['nullable'],
             'longitude' => ['nullable'],
-            'phone' => ['nullable', 'unique:customers'],
-            'password' => ['required'],
+            'phone' => ['nullable',  Rule::unique('customers')->ignore($id, 'uuid')],
+            'password' => ['sometimes', 'min:6'],
         ];
     }
 }

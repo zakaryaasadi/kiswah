@@ -25,8 +25,8 @@ class DonationTypePatchRequest extends BaseRequest
         return [
             'name' => ['sometimes', 'min:3'],
             'icon' => ['sometimes', 'file', 'mimes:jpg,bmp,png'],
-            'is_available' => ['sometimes','boolean'],
-            'is_acceptable' => ['nullable', 'boolean'],
+//            'is_available' => ['sometimes','boolean'],
+//            'is_acceptable' => ['nullable', 'boolean'],
         ];
     }
 }

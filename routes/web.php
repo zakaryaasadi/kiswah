@@ -14,4 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', 'VisitorController@index')->name('/');
+Route::get('/update', function () {
+    return \Illuminate\Support\Facades\Artisan::call('update:images');
+});
 Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');

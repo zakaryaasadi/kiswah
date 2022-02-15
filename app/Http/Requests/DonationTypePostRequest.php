@@ -25,8 +25,8 @@ class DonationTypePostRequest extends BaseRequest
         return [
             'name' => ['required', 'min:3'],
             'icon' => ['required', 'file', 'mimes:jpg,bmp,png'],
-            'is_available' => ['required', 'boolean'],
-            'is_acceptable' => ['nullable', 'boolean'],
+//            'is_available' => ['required', 'boolean'],
+//            'is_acceptable' => ['nullable', 'boolean'],
         ];
     }
 }

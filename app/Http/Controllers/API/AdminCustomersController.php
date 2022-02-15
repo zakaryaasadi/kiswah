@@ -11,9 +11,13 @@ class AdminCustomersController extends Controller
 {
 
 
-    public function index()
+    public function index(Request $request)
     {
         $customers = Customer::latest()->with(['locations'])->paginate(10);
+        if ($request->has('search')) {
+            $customers = Customer::whereLike(['name', 'phone', 'username', 'email'], $request->search)
+                ->latest()->with(['locations'])->paginate(10);
+        }
         return $this->respondWithSuccess(['data' => $customers]);
     }
 
@@ -48,7 +52,7 @@ class AdminCustomersController extends Controller
 
     public function update(CustomerPostRequest $request, $id)
     {
-        $customers = Customer::findOrFail($id);
+        $customers = Customer::where('uuid', $id)->firstOrFail();
         $data = $request->all();
         if ($request->hasFile('image')) {
             $image = moveFile($request->image);

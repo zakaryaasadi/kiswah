@@ -236,7 +236,7 @@ class Tookan
             "pickup_delivery_relationship" => 0,
             'job_pickup_datetime' => $start_time,
             'job_delivery_datetime' => $end_time,
-            'job_description' => $task->job_description ?? 'Test Entry',
+            'job_description' =>  'KSA App ' .$task->job_description,
             "layout_type" => 1,
             "team_id" => "",
             "geofence" => 0,
@@ -261,7 +261,7 @@ class Tookan
                     "order_id" => $task->order_id ?? '',
                     'job_pickup_datetime' => $start_time,
                     'job_delivery_datetime' => $end_time,
-                    'job_description' => 'Test ' . $task->job_description ?? 'Test Entry',
+                    'job_description' => 'KSA App ' . $task->job_description,
                 ]
             ],
         ];
@@ -288,7 +288,7 @@ class Tookan
             "pickup_delivery_relationship" => 0,
             'job_pickup_datetime' => $start_time,
             'job_delivery_datetime' => $end_time,
-            'job_description' => $request->job_description ?? 'Test Entry',
+            'job_description' =>  'KSA Web ' .$request->job_description,
             "layout_type" => 1,
             "team_id" => "",
             "geofence" => 0,
@@ -313,7 +313,7 @@ class Tookan
                     "order_id" => rand(72222222222222,99999999999999),
                     'job_pickup_datetime' => $start_time,
                     'job_delivery_datetime' => $end_time,
-                    'job_description' => 'Test ' . $request->job_description ?? 'Test Entry',
+                    'job_description' => 'KSA Web ' . $request->job_description,
                 ]
             ],
         ];

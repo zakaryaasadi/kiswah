@@ -15,14 +15,14 @@ class DonationTypeController extends Controller
     public function index(Request $request)
     {
         $donations = DonationType::query();
-        $donations = $donations->where('is_acceptable', $request->accept ?? 1);
-        $donations = $donations->where('is_available', $request->available ?? 1);
+//        $donations = $donations->where('is_acceptable', $request->accept ? 1 : 2);
+//        $donations = $donations->where('is_acceptable', $request->available ? 1 : 3);
         return $this->respondWithSuccess(['data' => $donations->paginate(10)]);
     }
 
     public function unaccept()
     {
-        $donations = DonationType::where('is_acceptable', 0)->paginate(10);
+        $donations = DonationType::where('is_acceptable', 2)->paginate(10);
         return $this->respondWithSuccess(['data' => $donations]);
     }
 

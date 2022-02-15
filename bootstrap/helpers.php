@@ -73,31 +73,14 @@ function parse_yturl($url)
     return (isset($matches[1])) ? $matches[1] : false;
 }
 
-function getYouTubeVideoImage($url)
+function sendSMS($phone, $otp)
 {
-//    $link = $pageVideUrl;
-//    $video_id = explode("?v=", $link);
-//    if (!isset($video_id[1])) {
-//        $video_id = explode("youtu.be/", $link);
-//    }
-//    $youtubeID = $video_id[1];
-//    if (empty($video_id[1])) $video_id = explode("/v/", $link);
-//    $video_id = explode("&", $video_id[1]);
-//    '%(?:youtube(?:-nocookie)?\.com/(?:[\w\-?&!#=,;]+/[\w\-?&!#=/,;]+/|(?:v|e(?:mbed)?)/|[\w\-?&!#=,;]*[?&]v=)|youtu\.be/)([\w-]{11})(?:[^\w-]|\Z)%i'
-
-
-    $pattern = '#^(?:https?://)?(?:www\.)?(?:youtu\.be/|youtube\.com(?:/embed/|/v/|/watch\?v=|/watch\?.+&v=))([\w-]{11})(?:.+)?$#x';
-    preg_match($pattern, $url, $matches);
-    if (isset($matches[1])) {
-        $youtubeVideoID = $matches[1];// [0];
-        if ($youtubeVideoID) {
-            return 'https://img.youtube.com/vi/' . $youtubeVideoID . '/mqdefault.jpg';
-        }
-
-    }
-
-
-    return '';
+    $user = '20096276';
+    $pwd = 'k24grx';
+    $sender = 'KISWAKSA';
+    $msg = "Your+OTP+code+is+$otp";
+    $url = "http://www.mshastra.com/sendurl.aspx?user=$user&pwd=$pwd&sender=$sender&mobileno=$phone&msgtext=$msg&CountryCode=+966";
+    return file_get_contents($url);
 }
 
 
