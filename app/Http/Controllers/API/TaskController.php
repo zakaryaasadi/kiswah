@@ -109,96 +109,114 @@ class TaskController extends Controller
 
     public function availableDates(Request $request)
     {
-        $validator = $this->getValidationFactory()->make($request->all(), [
-            'lat' => ['required', 'numeric', 'max:90'],
-            'lng' => ['required', 'numeric'],
-            'date' => ['nullable', 'date', 'date_format:Y-m-d', 'after_or_equal:now'],
-        ]);
-        if ($validator->fails()) {
-            return $this->respondWithErrors($validator->errors());
-        }
-        $array = array();
-        $location = $request->user('api')->locations()->whereLongitude($request->lng)
-            ->whereLatitude($request->lat)->first();
+        // $validator = $this->getValidationFactory()->make($request->all(), [
+        //     'lat' => ['required', 'numeric', 'max:90'],
+        //     'lng' => ['required', 'numeric'],
+        //     'date' => ['nullable', 'date', 'date_format:Y-m-d', 'after_or_equal:now'],
+        // ]);
+        // if ($validator->fails()) {
+        //     return $this->respondWithErrors($validator->errors());
+        // }
+        // $array = array();
+        // $location = $request->user('api')->locations()->whereLongitude($request->lng)
+        //     ->whereLatitude($request->lat)->first();
 
-        if ($location) {
-            $region = Region::latest()->where('id', $location->region_id)->first();
-        } else {
-            $regions = (new Tookan())->findRegion($request->lat, $request->lng);
-            $ids = [];
-            foreach ($regions->data as $line) {
-                $ids[] = $line['region_id'];
-            }
-            $region = Region::whereIn('tookan_id', $ids)->first();
-        }
-        $days = $region ? $region->days : [];
-        $now = $request->date ? Carbon::parse($request->date) : now();
-        $_14days = $request->date ? Carbon::parse($request->date)->addDays(7) : now()->addDays(7);
+        // if ($location) {
+        //     $region = Region::latest()->where('id', $location->region_id)->first();
+        // } else {
+        //     $regions = (new Tookan())->findRegion($request->lat, $request->lng);
+        //     $ids = [];
+        //     foreach ($regions->data as $line) {
+        //         $ids[] = $line['region_id'];
+        //     }
+        //     $region = Region::whereIn('tookan_id', $ids)->first();
+        // }
+        // $days = $region ? $region->days : [];
+        // $now = $request->date ? Carbon::parse($request->date) : now();
+        // $_14days = $request->date ? Carbon::parse($request->date)->addDays(7) : now()->addDays(7);
+        // $dates = getDatesFromRange($now->format("Y-m-d"), $_14days->format("Y-m-d"), null);
+        // foreach ($dates as $date) {
+        //     $is_full = false;
+        //     if (in_array(((int)$date->dayOfWeek + 1), $days)) {
+        //         $count = DB::table('tasks')->whereIn('job_status', [0, 1, 4, 6, 7])
+        //             ->whereDate('job_delivery_datetime', $date)->count();
+        //     }
+        //     $array[] = ['date' => $date->format('D, d/m/Y'), 'is_full' => $is_full,];
+        // }
+        // return $this->respondWithSuccess(['data' => $array]);
+
+
+        $now = now();
+        $_14days = now()->addDays(7);
         $dates = getDatesFromRange($now->format("Y-m-d"), $_14days->format("Y-m-d"), null);
         foreach ($dates as $date) {
-            $is_full = false;
-            if (in_array(((int)$date->dayOfWeek + 1), $days)) {
-                $count = DB::table('tasks')->whereIn('job_status', [0, 1, 4, 6, 7])
-                    ->whereDate('job_delivery_datetime', $date)->count();
-            }
-            $array[] = ['date' => $date->format('D, d/m/Y'), 'is_full' => $is_full,];
+            $array[] = ['date' => $date->format('D, d/m/Y'), 'is_full' => false,];
         }
         return $this->respondWithSuccess(['data' => $array]);
     }
 
     public function webDates(Request $request)
     {
-        $validator = $this->getValidationFactory()->make($request->all(), [
-            'lat' => ['required', 'numeric', 'max:90'],
-            'lng' => ['required', 'numeric'],
-            'date' => ['nullable', 'date', 'date_format:Y-m-d', 'after_or_equal:now'],
-        ]);
-        if ($validator->fails()) {
-            return $this->respondWithErrors($validator->errors());
-        }
-        if ($validator->fails()) {
-            return $this->respondWithErrors($validator->errors());
-        }
-        //Check for regions on Tookan
-        $array = array();
+        // $validator = $this->getValidationFactory()->make($request->all(), [
+        //     'lat' => ['required', 'numeric', 'max:90'],
+        //     'lng' => ['required', 'numeric'],
+        //     'date' => ['nullable', 'date', 'date_format:Y-m-d', 'after_or_equal:now'],
+        // ]);
+        // if ($validator->fails()) {
+        //     return $this->respondWithErrors($validator->errors());
+        // }
+        // if ($validator->fails()) {
+        //     return $this->respondWithErrors($validator->errors());
+        // }
+        // //Check for regions on Tookan
+        // $array = array();
 
-        $regions = (new Tookan())->findRegion($request->lat, $request->lng);
-        //Find tookan ids of the regions
-        $ids = [];
-        foreach ($regions->data as $line) {
-            $ids[] = $line['region_id'];
-        }
-        $region = Region::whereIn('tookan_id', $ids)->first();
-        $days = [];
-        if ($region) {
-            $days = $region->days;
-        }
+        // $regions = (new Tookan())->findRegion($request->lat, $request->lng);
+        // //Find tookan ids of the regions
+        // $ids = [];
+        // foreach ($regions->data as $line) {
+        //     $ids[] = $line['region_id'];
+        // }
+        // $region = Region::whereIn('tookan_id', $ids)->first();
+        // $days = [];
+        // if ($region) {
+        //     $days = $region->days;
+        // }
 
-        $now = $request->date ? Carbon::parse($request->date) : now();
-        $_14days = $request->date ? Carbon::parse($request->date)->addDays(7) : now()->addDays(7);
+        // $now = $request->date ? Carbon::parse($request->date) : now();
+        // $_14days = $request->date ? Carbon::parse($request->date)->addDays(7) : now()->addDays(7);
+        // $dates = getDatesFromRange($now->format("Y-m-d"), $_14days->format("Y-m-d"), null);
+        // foreach ($dates as $date) {
+        //     $is_full = true;
+        //     $message = '';
+        //     if (!$region) {
+        //         $message = 'The cordinates does not fall under our Geo Fence';
+        //     }
+        //     if (in_array(((int)$date->dayOfWeek + 1), $days)) {
+        //         $count = DB::table('tasks')->whereIn('job_status', [0, 1, 4, 6, 7])
+        //             ->whereDate('job_delivery_datetime', $date)->count();
+        //         if ($region) {
+        //             $is_full = true;
+        //             $message = 'The day is not available under this Geo Fence';
+
+        //             if ($region->capacity >= $count) {
+        //                 $is_full = false;
+        //                 $message = 'The cordinates is available';
+        //             } else {
+        //                 $message = 'There are more orders  under this Geo Fence at the moment';
+        //             }
+        //         }
+        //     }
+        //     $array[] = ['date' => $date->format('D, d/m/Y'), 'is_available' => !$is_full, 'reason' => $message];
+        // }
+        // return $this->respondWithSuccess(['data' => $array]);
+
+
+        $now = now();
+        $_14days = now()->addDays(7);
         $dates = getDatesFromRange($now->format("Y-m-d"), $_14days->format("Y-m-d"), null);
         foreach ($dates as $date) {
-            $is_full = true;
-            $message = '';
-            if (!$region) {
-                $message = 'The cordinates does not fall under our Geo Fence';
-            }
-            if (in_array(((int)$date->dayOfWeek + 1), $days)) {
-                $count = DB::table('tasks')->whereIn('job_status', [0, 1, 4, 6, 7])
-                    ->whereDate('job_delivery_datetime', $date)->count();
-                if ($region) {
-                    $is_full = true;
-                    $message = 'The day is not available under this Geo Fence';
-
-                    if ($region->capacity >= $count) {
-                        $is_full = false;
-                        $message = 'The cordinates is available';
-                    } else {
-                        $message = 'There are more orders  under this Geo Fence at the moment';
-                    }
-                }
-            }
-            $array[] = ['date' => $date->format('D, d/m/Y'), 'is_available' => !$is_full, 'reason' => $message];
+            $array[] = ['date' => $date->format('D, d/m/Y'), 'is_available' => true, 'reason' => 'The cordinates is available'];
         }
         return $this->respondWithSuccess(['data' => $array]);
     }
