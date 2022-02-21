@@ -335,7 +335,7 @@ class Tookan
             'has_delivery' => '0',
             'layout_type' => '0',
             'tracking_link' => 1,
-            'timezone' => '300',
+            'timezone' => '-180',
             'fleet_id' => '',
             'notify' => 1,
             'tags' => '',
