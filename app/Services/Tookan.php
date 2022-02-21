@@ -221,9 +221,9 @@ class Tookan
     public function createTask(Task $task): object
     {
         $user = auth()->user();
-        $start = Carbon::parse($task->job_delivery_datetime);
+        $start = Carbon::parse($task->job_delivery_datetime)->addHours(3);
         $start_time = $start->format('Y-m-d') . ' ' . now()->format('H:i:s');
-        $end = Carbon::parse($start_time)->addHours(18);
+        $end = Carbon::parse($start_time)->addHours(21);
         $end_time = $end->format('Y-m-d H:i:s ') ;
         $data = [
             "is_dashboard" => 1,
@@ -273,9 +273,9 @@ class Tookan
     public function createWebTask( $request): object
     {
 
-        $start = Carbon::parse($request->job_delivery_datetime);
+        $start = Carbon::parse($request->job_delivery_datetime)->addHours(3);
         $start_time = $start->format('Y-m-d') . ' ' . now()->format('H:i:s');
-        $end = Carbon::parse($start_time)->addHours(18);
+        $end = Carbon::parse($start_time)->addHours(21);
         $end_time = $end->format('Y-m-d H:i:s ') ;
         $data = [
             "is_dashboard" => 1,
